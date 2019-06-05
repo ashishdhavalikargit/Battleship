@@ -7,7 +7,9 @@ class BattleShip(object):
     def __init__(self):
         self.grid_start_header = 65
         self.grid = defaultdict(list)
-        self.ship_type = {"cargo ship": 3, "boat": 2}
+        self.ship_type = {"cargo ship": 3, "subsubmarine": 2}
+        self.occupancy = []
+        self.attack_history = {}
 
     def create_grid(self, grid_width=5, grid_length=5):
         self.grid_width = grid_width
@@ -21,6 +23,7 @@ class BattleShip(object):
         ship_value = self.ship_type[ship_type]
         ship_header, ship_index = start.split(":")  # value must separated in colons ex-> A:3
         ship_index = int(ship_index)
+        new_occupancy = []
 
         if direction.lower() == "right":
             ocean_value = range(ship_index - 1, (ship_index + ship_value - 1))
@@ -28,6 +31,7 @@ class BattleShip(object):
                 return False, "Ships are colliding"
             for i in ocean_value:
                 self.grid[ship_header.upper()][i] = True
+                new_occupancy.append(ship_header.upper() + ":" + str(i-1))
 
         if direction.lower() == "left":
             ocean_value = range((ship_index - ship_value), ship_index)
@@ -35,6 +39,7 @@ class BattleShip(object):
                 return False, "Ships are colliding"
             for i in ocean_value:
                 self.grid[ship_header.upper()][i] = True
+                new_occupancy.append(ship_header.upper() + ":" + str(i+1))
 
         if direction.lower() == "up":
             ship_header = ship_header.upper()
@@ -43,6 +48,7 @@ class BattleShip(object):
                 return False, "Ships are colliding"
             for i in ocean_value:
                 self.grid[chr(i)][ship_index - 1] = True
+                new_occupancy.append(chr(i) + ":" + str(ship_index))
 
         if direction.lower() == "down":
             ship_header = ship_header.upper()
@@ -51,6 +57,8 @@ class BattleShip(object):
                 return False, "Ships are colliding"
             for i in ocean_value:
                 self.grid[chr(i)][ship_index - 1] = True
+                new_occupancy.append(chr(i) + ":" + str(ship_index))
+        self.occupancy.append(new_occupancy)
         return True, "Ships are ready for battle"
 
     def show_ships(self):
@@ -68,18 +76,44 @@ class BattleShip(object):
             result = any([self.grid[chr(i)][vertical] for i in ocean_value])
         return result
 
+    def attack(self, position):
+        status = "miss"
+        position = position.strip().upper()
+        if position in self.attack_history:
+            return "already present", False
+        ships = len(self.occupancy)
+        for ship_occupancy in self.occupancy:
+            if position in ship_occupancy:
+                ship_occupancy.remove(position)
+                status = "hit"
+                ship_header, ship_index = position.split(":")
+                ship_index = int(ship_index) - 1
+                self.grid[ship_header][ship_index] = False
+        self.occupancy = [occupancy for occupancy in self.occupancy if occupancy]
+        if len(self.occupancy) != ships:
+            status += " and destroyed"
+        if not self.occupancy:
+            status = "GAME OVER"
+        self.attack_history.update({position : status})
+        return status, True 
 
 
 
 ###  for testing purpose  ###
-"""
+'''
 test = BattleShip()
 test.create_grid()
 print("\n" * 3)
-print(test.create_ship("cargo ship", "a:3", "left"))
-test.create_ship("boat", "c:4", "down")
-test.create_ship("boat", "e:1", "up")
-print(test.create_ship("boat", "e:2", "right"))
+test.create_ship("cargo ship", "a:4", "left")
+test.create_ship("subsubmarine", "c:4", "down")
+test.create_ship("subsubmarine", "e:1", "up")
+test.create_ship("subsubmarine", "e:2", "right")
 test.show_ships()
-"""
-
+print(test.attack("e:1"))
+print(test.attack("d:1"))
+print(test.attack("d:1"))
+print(test.attack("e:5"))
+print(test.attack_history)
+print("-------------   update ocean status   -------------")
+test.show_ships()
+'''
