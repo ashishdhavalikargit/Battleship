@@ -23,22 +23,35 @@ class BattleShip(object):
         ship_index = int(ship_index)
 
         if direction.lower() == "right":
-            for i in range(ship_index - 1, (ship_index + ship_value - 1)):
+            ocean_value = range(ship_index - 1, (ship_index + ship_value - 1))
+            if self.__collaps(ocean_value, horizental=ship_header.upper()):
+                return False, "Ships are colliding"
+            for i in ocean_value:
                 self.grid[ship_header.upper()][i] = True
 
         if direction.lower() == "left":
-            for i in range((ship_index - ship_value), ship_index):
+            ocean_value = range((ship_index - ship_value), ship_index)
+            if self.__collaps(ocean_value, horizental=ship_header.upper()):
+                return False, "Ships are colliding"
+            for i in ocean_value:
                 self.grid[ship_header.upper()][i] = True
 
         if direction.lower() == "up":
             ship_header = ship_header.upper()
-            for i in range(ord(ship_header), (ord(ship_header) - ship_value), -1):
+            ocean_value = range(ord(ship_header), (ord(ship_header) - ship_value), -1)
+            if self.__collaps(ocean_value, vertical=(ship_index - 1)):
+                return False, "Ships are colliding"
+            for i in ocean_value:
                 self.grid[chr(i)][ship_index - 1] = True
 
         if direction.lower() == "down":
             ship_header = ship_header.upper()
-            for i in range(ord(ship_header), (ord(ship_header) + ship_value)):
+            ocean_value = range(ord(ship_header), (ord(ship_header) + ship_value))
+            if self.__collaps(ocean_value, vertical=(ship_index - 1)):
+                return False, "Ships are colliding"
+            for i in ocean_value:
                 self.grid[chr(i)][ship_index - 1] = True
+        return True, "Ships are ready for battle"
 
     def show_ships(self):
         count = 0
@@ -48,15 +61,25 @@ class BattleShip(object):
             count += 1
             print(i + "    " + "    ".join([chr(36) if j else chr(34) for j in self.grid[i]]))
 
+    def __collaps(self, ocean_value, horizental="empty", vertical="empty"):
+        if horizental != "empty":
+            result = any([self.grid[horizental][i] for i in ocean_value])
+        if vertical != "empty":
+            result = any([self.grid[chr(i)][vertical] for i in ocean_value])
+        return result
+
+
+
 
 ###  for testing purpose  ###
-
+"""
 test = BattleShip()
 test.create_grid()
 print("\n" * 3)
-test.create_ship("cargo ship", "a:3", "left")
+print(test.create_ship("cargo ship", "a:3", "left"))
 test.create_ship("boat", "c:4", "down")
 test.create_ship("boat", "e:1", "up")
-test.create_ship("boat", "b:2", "right")
+print(test.create_ship("boat", "e:2", "right"))
 test.show_ships()
+"""
 
