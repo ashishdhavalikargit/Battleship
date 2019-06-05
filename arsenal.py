@@ -31,7 +31,7 @@ class BattleShip(object):
                 return False, "Ships are colliding"
             for i in ocean_value:
                 self.grid[ship_header.upper()][i] = True
-                new_occupancy.append(ship_header.upper() + ":" + str(i-1))
+                new_occupancy.append(ship_header.upper() + ":" + str(i+1))
 
         if direction.lower() == "left":
             ocean_value = range((ship_index - ship_value), ship_index)
@@ -89,6 +89,7 @@ class BattleShip(object):
                 ship_header, ship_index = position.split(":")
                 ship_index = int(ship_index) - 1
                 self.grid[ship_header][ship_index] = False
+                break
         self.occupancy = [occupancy for occupancy in self.occupancy if occupancy]
         if len(self.occupancy) != ships:
             status += " and destroyed"
@@ -97,23 +98,3 @@ class BattleShip(object):
         self.attack_history.update({position : status})
         return status, True 
 
-
-
-###  for testing purpose  ###
-'''
-test = BattleShip()
-test.create_grid()
-print("\n" * 3)
-test.create_ship("cargo ship", "a:4", "left")
-test.create_ship("subsubmarine", "c:4", "down")
-test.create_ship("subsubmarine", "e:1", "up")
-test.create_ship("subsubmarine", "e:2", "right")
-test.show_ships()
-print(test.attack("e:1"))
-print(test.attack("d:1"))
-print(test.attack("d:1"))
-print(test.attack("e:5"))
-print(test.attack_history)
-print("-------------   update ocean status   -------------")
-test.show_ships()
-'''
