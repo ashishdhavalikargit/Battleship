@@ -1,4 +1,5 @@
 from collections import defaultdict,OrderedDict
+from random import randint
 
 
 class BattleShip(object):
@@ -10,6 +11,7 @@ class BattleShip(object):
         self.ship_type = {"cargo-ship": 3, "submarine": 2}
         self.occupancy = []
         self.attack_history = {}
+        self.direction = ["right", "left", "up", "down"]
 
     def create_grid(self, grid_width, grid_length):
         self.grid_width = grid_width
@@ -34,6 +36,8 @@ class BattleShip(object):
                     new_occupancy.append(ship_header.upper() + ":" + str(i+1))
 
             if direction.lower() == "left":
+                if ship_index - ship_value < 0 :
+                    raise IndexError
                 ocean_value = range((ship_index - ship_value), ship_index)
                 if self.__collaps(ocean_value, horizental=ship_header.upper()):
                     return False, "Ships are colliding"
@@ -103,3 +107,13 @@ class BattleShip(object):
             status = "GAME OVER"
         self.attack_history.update({position : status})
         return status, True
+
+    def create_random_ships(self, ships):
+        count = ships
+        while count:
+            status, msg = self.create_ship(
+                list(self.ship_type.keys())[randint(0,(len(self.ship_type) - 1))],
+                chr(self.grid_start_header + randint(0,(ships + 1))) + ":" + str(randint(0,(ships + 1))),
+                self.direction[randint(0,(len(self.direction) - 1))])
+            if status:
+                count -= 1

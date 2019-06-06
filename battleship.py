@@ -6,6 +6,7 @@ class Player(BattleShip):
 
 def main():
 	print("\n==================      welcome to battleship      ==================\n")
+	# include aound
 	status = True
 	while (status):
 		value = int(input("\nPlease enter ocean size (3 or more):  "))
@@ -31,5 +32,7 @@ def main():
 			count -= 1
 		print(msg)
 	player1.show_ships()
+	cpu.create_random_ships(ships)
+	# include sound
 
 main()
