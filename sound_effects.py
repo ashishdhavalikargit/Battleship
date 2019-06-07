@@ -5,7 +5,7 @@ winmm = windll.winmm
 def mciSend(s):
    i=winmm.mciSendStringA(s,0,0,0)
    if i<0:
-      print "Error %d in mciSendString %s" % ( i, s )
+      print("Error %d in mciSendString %s" % ( i, s ))
 
 def playMP3(mp3Name):
    mciSend("Close All")

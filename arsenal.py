@@ -10,7 +10,7 @@ class BattleShip(object):
         self.grid = defaultdict(list)
         self.ship_type = {"cargo-ship": 3, "submarine": 2}
         self.occupancy = []
-        self.attack_history = {}
+        self.attaks = {}
         self.direction = ["right", "left", "up", "down"]
 
     def create_grid(self, grid_width, grid_length):
@@ -89,7 +89,7 @@ class BattleShip(object):
     def attack(self, position):
         status = "miss"
         position = position.strip().upper()
-        if position in self.attack_history:
+        if position in self.attaks:
             return "already present", False
         ships = len(self.occupancy)
         for ship_occupancy in self.occupancy:
@@ -105,7 +105,7 @@ class BattleShip(object):
             status += " and destroyed"
         if not self.occupancy:
             status = "GAME OVER"
-        self.attack_history.update({position : status})
+        self.attaks.update({position : status})
         return status, True
 
     def create_random_ships(self, ships):
@@ -117,3 +117,12 @@ class BattleShip(object):
                 self.direction[randint(0,(len(self.direction) - 1))])
             if status:
                 count -= 1
+
+    def hit_random(self):
+        ships = self.grid_width - 2
+        track = False
+        while not track:
+            value = chr(self.grid_start_header + randint(0,(ships + 1))) + ":" + str(randint(0,(ships + 1)))
+            status, track = self.attack(value)
+        return status, value
+
