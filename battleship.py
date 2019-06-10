@@ -1,6 +1,7 @@
 from arsenal import BattleShip
 from platform import python_version
 from sound_effects import playMP3
+from re import findall
 
 take_input = input if int(python_version()[0]) == 3 else raw_input
 
@@ -11,6 +12,7 @@ class Player(BattleShip):
 		self.name = "player"
 		self.opponent = None
 		self.status = "start"
+		self.varify_regex = "[a-z|A-Z|:\\d+]"
 	
 	def get_attack_history(self):
 		return self.attaks_history
@@ -19,7 +21,7 @@ class Player(BattleShip):
 		location =  str(take_input("\nEnter attack point Ex.[B:2] :  "))
 		try:
 			position, value = location.strip().upper().split(':')
-			if (position not in self.opponent.grid) or (int(value) not in range(1, (self.opponent.grid_width + 1))):
+			if (position not in self.opponent.grid) or (int(value) not in range(self.opponent.grid_width)):
 				raise ValueError
 			self.status, value = self.opponent.attack(location)
 			self.attaks_history.update({location: self.status})
@@ -44,7 +46,11 @@ def main():
 	player1.name = name
 	status = True
 	while (status):
-		value = int(take_input("\nPlease enter ocean size (3 or more):  "))
+		value = str(take_input("\nPlease enter ocean size (3 or more):  "))
+		if not value.isdigit():
+			print("PLAESE ENTER A VALID NUMBER ...")
+			continue
+		value = int(value)
 		status = value < 3
 		if status:
 			print("\nOCEAN IS TOO SMALL EVEN FOR FISH TO SWIM \nPLEASE DREAM BIGGER ...")
@@ -58,8 +64,17 @@ def main():
 	player1.show_ships()
 	while count:
 		ship_type = str(take_input("\nEnter ship type cargo-ship/submarine :  "))
+		if ship_type.strip().lower() not in player1.ship_type:
+			print("ENTER CORRECT SHIP ....")
+			continue
 		start =  str(take_input("\nEnter ship initial point Ex.[A:3] :  "))
+		if len(findall(player1.varify_regex, start)) != 3:
+			print("PLAESE ENTER IN PROPER FORMAT ...")
+			continue
 		direction = str(take_input("\nEnter direction  right/left/up/down:  "))
+		if direction.strip().lower() not in player1.direction:
+			print("ENTER DIRECTIONS PROPERLY ...")
+			continue
 		status, msg = player1.create_ship(ship_type, start, direction)
 		if status:
 			count -= 1

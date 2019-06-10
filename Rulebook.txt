@@ -7,7 +7,7 @@ out coordinates. Neither you nor the other player can see the other's board so y
 where they are. Each player in the game has grid on which he/she will place the ships.
 
 STARTING A NEW GAME:
-Each player places the no of ships given to them somewhere on their board.
+Each player places the number of ships given to them somewhere on their board.
 The ships can only be placed vertically or horizontally.
 Diagonal placement is not allowed. 
 No part of a ship may hang off the edge of the board. 
@@ -28,3 +28,7 @@ When all of the squares that one your ships occupies have been hit, the ship wil
 You will announce "HIT AND DESTROYED".
 
 As soon as all of one player's ships have been DESTROYED, the GAME IS OVER.
+
+-- CREDITS
+	Ashish Dhavalikar
+	Shubham Patnaik

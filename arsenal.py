@@ -17,7 +17,7 @@ class BattleShip(object):
         self.grid_width = grid_width
         self.grid_length = grid_length
         for row in range(self.grid_start_header, (self.grid_start_header + grid_width)):
-            for column in range(1, grid_length + 1):
+            for column in range(0, grid_length):
                 self.grid[chr(row)].append(False)
         self.grid = OrderedDict(sorted(self.grid.items()))
 
@@ -27,13 +27,15 @@ class BattleShip(object):
             ship_header, ship_index = start.split(":")  # value must separated in colons ex-> A:3
             ship_index = int(ship_index)
             new_occupancy = []
+            if direction.lower() not in self.direction:
+                return False, "WRONG DIRECTIONS ..."
             if direction.lower() == "right":
-                ocean_value = range(ship_index - 1, (ship_index + ship_value - 1))
+                ocean_value = range(ship_index, (ship_index + ship_value))
                 if self.__collaps(ocean_value, horizental=ship_header.upper()):
                     return False, "Ships are colliding"
                 for i in ocean_value:
                     self.grid[ship_header.upper()][i] = True
-                    new_occupancy.append(ship_header.upper() + ":" + str(i+1))
+                    new_occupancy.append(ship_header.upper() + ":" + str(i))
 
             if direction.lower() == "left":
                 if ship_index - ship_value < 0 :
@@ -43,24 +45,24 @@ class BattleShip(object):
                     return False, "Ships are colliding"
                 for i in ocean_value:
                     self.grid[ship_header.upper()][i] = True
-                    new_occupancy.append(ship_header.upper() + ":" + str(i+1))
+                    new_occupancy.append(ship_header.upper() + ":" + str(i))
 
             if direction.lower() == "up":
                 ship_header = ship_header.upper()
                 ocean_value = range(ord(ship_header), (ord(ship_header) - ship_value), -1)
-                if self.__collaps(ocean_value, vertical=(ship_index - 1)):
+                if self.__collaps(ocean_value, vertical=(ship_index)):
                     return False, "Ships are colliding"
                 for i in ocean_value:
-                    self.grid[chr(i)][ship_index - 1] = True
+                    self.grid[chr(i)][ship_index] = True
                     new_occupancy.append(chr(i) + ":" + str(ship_index))
 
             if direction.lower() == "down":
                 ship_header = ship_header.upper()
                 ocean_value = range(ord(ship_header), (ord(ship_header) + ship_value))
-                if self.__collaps(ocean_value, vertical=(ship_index - 1)):
+                if self.__collaps(ocean_value, vertical=(ship_index)):
                     return False, "Ships are colliding"
                 for i in ocean_value:
-                    self.grid[chr(i)][ship_index - 1] = True
+                    self.grid[chr(i)][ship_index] = True
                     new_occupancy.append(chr(i) + ":" + str(ship_index))
             self.occupancy.append(new_occupancy)
             return True, "Ships are ready for battle"
@@ -73,7 +75,7 @@ class BattleShip(object):
 
     def show_ships(self):
         count = 0
-        print("     " + "    ".join([str(i) for i in range(1, self.grid_length + 1)]))
+        print("     " + "    ".join([str(i) for i in range(self.grid_length)]))
         for i in self.grid:
             print("\n")
             count += 1
@@ -97,7 +99,7 @@ class BattleShip(object):
                 ship_occupancy.remove(position)
                 status = "hit"
                 ship_header, ship_index = position.split(":")
-                ship_index = int(ship_index) - 1
+                ship_index = int(ship_index)
                 self.grid[ship_header][ship_index] = False
                 break
         self.occupancy = [occupancy for occupancy in self.occupancy if occupancy]
@@ -122,7 +124,7 @@ class BattleShip(object):
         ships = self.grid_width - 2
         track = False
         while not track:
-            value = chr(self.grid_start_header + randint(0,(ships + 1))) + ":" + str(randint(0,(ships + 1)))
+            value = chr(self.grid_start_header + randint(0,(ships))) + ":" + str(randint(0,(ships)))
             status, track = self.attack(value)
         return status, value
 
