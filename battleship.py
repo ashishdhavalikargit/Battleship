@@ -11,7 +11,7 @@ class Player(BattleShip):
 		self.name = "player"
 		self.opponent = None
 		self.status = "start"
-
+	
 	def get_attack_history(self):
 		return self.attaks_history
 
@@ -34,8 +34,43 @@ player1.opponent = cpu
 cpu.name = "computer"
 
 def main():
+	game_rules="""
+GAME OBJECTIVE:
+
+The object of Battleship is to try and sink all of the other player's before they sink all of your ships.
+All of the other player's ships are somewhere on his/her board.  You try and hit them by calling out the 
+coordinates of one of the squares on the board.  The other player also tries to hit your ships by calling
+out coordinates. Neither you nor the other player can see the other's board so you must try to guess 
+where they are. Each player in the game has grid on which he/she will place the ships.
+
+STARTING A NEW GAME:
+Each player places the no of ships given to them somewhere on their board.
+The ships can only be placed vertically or horizontally.
+Diagonal placement is not allowed. 
+No part of a ship may hang off the edge of the board. 
+Ships may not overlap each other.
+No ships may be placed on another ship. 
+
+Once the guessing begins, the players may not move the ships.
+
+The 2 type of ships are:  cargo-ship(3), Submarine (2).  
+
+PLAYING THE GAME:
+Player's take turns guessing by calling out the coordinates. The opponent responds with "hit" or "miss" as appropriate.
+Both players will mark their board with: HIT or MISS. For example, if you call out A:5 and your opponent does not have 
+any ship located at A:5, your opponent would respond with "miss".  
+You record the miss A:5 will be place in your history list and you can also see Your opponent records of attempts to hit.
+
+When all of the squares that one your ships occupies have been hit, the ship will be DESTROYED. 
+You will announce "HIT AND DESTROYED".
+
+As soon as all of one player's ships have been DESTROYED, the GAME IS OVER."""
+
 	print("\n==================      welcome to battleship      ==================\n")
-	playMP3("mp3tracks/ship_built.mp3")
+	playMP3("mp3tracks/Intro.mp3")
+	rules = str(take_input("DO WANT TO KNOW THE RULES OF THE GAME PLEASE ENTER (YES/NO): "))
+	if rules.upper() == "YES":
+		print(game_rules)
 	name = str(take_input("\nENTER YOUR NAME :  "))
 	player1.name = name
 	status = True
