@@ -12,7 +12,7 @@ class Player(BattleShip):
 		self.name = "player"
 		self.opponent = None
 		self.status = "start"
-		self.varify_regex = "[a-z|A-Z|:\\d+]"
+		self.verify_regex = "[a-z|A-Z|:\\d+]"
 	
 	def get_attack_history(self):
 		return self.attaks_history
@@ -30,17 +30,19 @@ class Player(BattleShip):
 			print("\nPlease Enter a valid input ...")
     	
 		
-player1 = Player()
-cpu = Player()
-player1.opponent = cpu
-cpu.name = "computer"
+player1 = None
+cpu = None
 
 def main():
+	player1 = Player()
+	cpu = Player()
+	player1.opponent = cpu
+	cpu.name = "computer"
 	print("\n==================      welcome to battleship      ==================\n")
 	playMP3("mp3tracks/Intro.mp3")
 	rules = str(take_input("DO WANT TO KNOW THE RULES OF THE GAME PLEASE ENTER (YES/NO): "))
 	if rules.upper() == "YES":
-		with open("Rulebook.txt") as rules:
+		with open("mp3tracks/Rulebook.txt") as rules:
 			print(rules.read())
 	name = str(take_input("\nENTER YOUR NAME :  "))
 	player1.name = name
@@ -68,8 +70,12 @@ def main():
 			print("ENTER CORRECT SHIP ....")
 			continue
 		start =  str(take_input("\nEnter ship initial point Ex.[A:3] :  "))
-		if len(findall(player1.varify_regex, start)) != 3:
+		if len(findall(player1.verify_regex, start)) != 3:
 			print("PLAESE ENTER IN PROPER FORMAT ...")
+			continue
+		position, value = start.strip().upper().split(':')
+		if (position not in player1.grid) or (int(value) not in range(player1.grid_width)):
+			print("Mind YOUR OCEAN VALUES ...")
 			continue
 		direction = str(take_input("\nEnter direction  right/left/up/down:  "))
 		if direction.strip().lower() not in player1.direction:
@@ -81,10 +87,10 @@ def main():
 		print(msg)
 	player1.show_ships()
 	cpu.create_random_ships(ships)
-	playMP3("mp3tracks/ship_built.mp3")	
+	playMP3("mp3tracks/ship_built.mp3")
+	return player1, cpu
 
-
-def start():
+def start(player1, cpu):
 	computer_attacks = list()
 	status = "start"
 	value = False
@@ -111,5 +117,12 @@ def start():
 	playMP3("mp3tracks/gameover.mp3")
 
 
-main()
-start()
+
+play = True
+while play:
+	player1,cpu  = main()
+	start(player1, cpu)
+	con = str(take_input("Enter 'C' to play again  :"))
+	play = con.strip().lower() == 'c'
+	player1 = None
+	cpu = None

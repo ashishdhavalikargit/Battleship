@@ -38,8 +38,6 @@ class BattleShip(object):
                     new_occupancy.append(ship_header.upper() + ":" + str(i))
 
             if direction.lower() == "left":
-                if ship_index - ship_value < 0 :
-                    raise IndexError
                 ocean_value = range((ship_index - ship_value), ship_index)
                 if self.__collaps(ocean_value, horizental=ship_header.upper()):
                     return False, "Ships are colliding"
@@ -126,6 +124,5 @@ class BattleShip(object):
         while not track:
             value = chr(self.grid_start_header + randint(0,(ships + 1))) + ":" + str(randint(0,(ships + 1)))
             status, track = self.attack(value)
-            print("check Point 1", track)
         return status, value
 
