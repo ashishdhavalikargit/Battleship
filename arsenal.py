@@ -124,7 +124,8 @@ class BattleShip(object):
         ships = self.grid_width - 2
         track = False
         while not track:
-            value = chr(self.grid_start_header + randint(0,(ships))) + ":" + str(randint(0,(ships)))
+            value = chr(self.grid_start_header + randint(0,(ships + 1))) + ":" + str(randint(0,(ships + 1)))
             status, track = self.attack(value)
+            print("check Point 1", track)
         return status, value
 

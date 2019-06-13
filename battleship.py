@@ -104,6 +104,11 @@ def start():
 		if status == "miss":
 			value = (not value)
 			player = (player1, cpu)[value]
+			playMP3("mp3tracks/miss.mp3")
+		else:
+			playMP3("mp3tracks/Hit.mp3")
+	print("Congratulations " + player.name + " You Won ...!!!")
+	playMP3("mp3tracks/gameover.mp3")
 
 
 main()
